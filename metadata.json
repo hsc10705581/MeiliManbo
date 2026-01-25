@@ -1,0 +1,7 @@
+{
+  "name": "资源仓库 (MeiliSearch)",
+  "description": "基于 MeiliSearch 倒排索引的高性能多模态资源管理系统，支持 Docker 一键部署与秒级检索。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "resource-warehouse",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "esbuild index.tsx --bundle --outfile=dist/index.js --loader:.tsx=tsx --loader:.ts=ts --minify --sourcemap --platform=browser --target=es2020 --define:process.env.API_KEY='\"'\"$API_KEY\"'\"' --define:process.env.LOGIN_USER='\"'\"$LOGIN_USER\"'\"' --define:process.env.LOGIN_PASS='\"'\"$LOGIN_PASS\"'\"'"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "@google/genai": "^1.38.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}

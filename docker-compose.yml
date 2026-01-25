@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # 资源库前端应用 (包含 Nginx 反向代理)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.txt
+    ports:
+      - "8080:80"
+    environment:
+      - API_KEY=${API_KEY}
+      - LOGIN_USER=${LOGIN_USER:-admin}
+      - LOGIN_PASS=${LOGIN_PASS:-admin}
+    networks:
+      - backend-network
+    depends_on:
+      - meilisearch
+    restart: always
+
+  # MeiliSearch 搜索引擎
+  meilisearch:
+    image: getmeili/meilisearch:v1.9
+    environment:
+      - MEILI_MASTER_KEY=masterKey_YourSecureKey
+      - MEILI_ENV=production
+    networks:
+      - backend-network
+    volumes:
+      - meili_data:/meili_data
+    restart: always
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  meili_data:
