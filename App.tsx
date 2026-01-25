@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Resource, ViewMode, SearchHit } from './types';
 import ResourceCard from './components/ResourceCard';
@@ -7,8 +8,17 @@ import { initMeili, syncToMeili, deleteFromMeili, batchDeleteFromMeili, searchIn
 
 type SortKey = 'date' | 'rating' | 'size' | 'relevance';
 
+// 声明 window 上的环境变量对象
+declare global {
+  interface Window {
+    _env_?: {
+      LOGIN_USER?: string;
+      LOGIN_PASS?: string;
+    };
+  }
+}
+
 const App: React.FC = () => {
-  // 认证状态
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('is_authenticated') === 'true';
   });
@@ -25,11 +35,10 @@ const App: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // 登录逻辑
+  // 改进的登录逻辑：从运行时生成的 window._env_ 读取
   const handleLogin = (user: string, pass: string) => {
-    // 这里的值来自 package.json 里的 define，由 esbuild 在构建时注入
-    const targetUser = (process.env as any).LOGIN_USER || 'admin';
-    const targetPass = (process.env as any).LOGIN_PASS || 'admin';
+    const targetUser = window._env_?.LOGIN_USER || 'admin';
+    const targetPass = window._env_?.LOGIN_PASS || 'admin';
 
     if (user === targetUser && pass === targetPass) {
       sessionStorage.setItem('is_authenticated', 'true');
@@ -131,7 +140,8 @@ const App: React.FC = () => {
   const handleBatchDelete = async () => {
     const count = selectedIds.size;
     if (window.confirm(`确定要删除选中的 ${count} 个资源吗？`)) {
-      const idsToDelete = Array.from(selectedIds);
+      // FIX: Explicitly cast to string[] to resolve the reported unknown[] inference error.
+      const idsToDelete = Array.from(selectedIds) as string[];
       const updated = resources.filter(r => !selectedIds.has(r.id));
       setResources(updated);
       await batchDeleteFromMeili(idsToDelete);
@@ -175,7 +185,6 @@ const App: React.FC = () => {
 
   const closeModal = () => { setIsModalOpen(false); setEditingResource(undefined); };
 
-  // 如果未登录，返回登录界面
   if (!isAuthenticated) {
     return <LoginForm onLogin={handleLogin} />;
   }
@@ -212,7 +221,6 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* 批量操作栏 */}
       {selectedIds.size > 0 && (
         <div className="bg-indigo-600 text-white px-6 py-3 sticky top-[73px] z-30 flex items-center justify-between shadow-xl animate-slide-down">
           <div className="flex items-center space-x-4">
@@ -225,7 +233,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* 工具栏 */}
       <div className="px-8 pt-6 pb-2 max-w-7xl mx-auto w-full space-y-4">
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">标签筛选:</span>

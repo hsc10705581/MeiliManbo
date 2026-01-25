@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "esbuild index.tsx --bundle --outfile=dist/index.js --loader:.tsx=tsx --loader:.ts=ts --minify --sourcemap --platform=browser --target=es2020 --define:process.env.API_KEY='\"'\"$API_KEY\"'\"' --define:process.env.LOGIN_USER='\"'\"$LOGIN_USER\"'\"' --define:process.env.LOGIN_PASS='\"'\"$LOGIN_PASS\"'\"'"
+    "build": "esbuild index.tsx --bundle --outfile=dist/index.js --loader:.tsx=tsx --loader:.ts=ts --minify --sourcemap --platform=browser --target=es2020 --define:process.env.API_KEY='\"'\"$API_KEY\"'\"'"
   },
   "dependencies": {
     "react": "^19.2.3",

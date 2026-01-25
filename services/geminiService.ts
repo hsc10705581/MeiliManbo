@@ -2,7 +2,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Resource } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+// Initialize Gemini with the API key directly from process.env.API_KEY as per guidelines.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 /**
  * 使用语义理解搜索集合（作为 MeiliSearch 的补充或备选语义方案）。
@@ -41,6 +42,7 @@ export const semanticSearch = async (
       }
     });
 
+    // Access .text as a property, not a method.
     const result = JSON.parse(response.text || "{\"ids\":[]}");
     return result.ids || [];
   } catch (error) {
